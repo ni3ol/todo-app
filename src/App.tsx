@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import { getProject } from "./project/actions/get-project";
+import { ProjectType } from "./project/domain/project";
+import { ProjectView } from "./project/project-view";
+import { getProjects } from "./project/actions/get-projects";
+import { Menu } from "./shared/components/menu";
 
 function App() {
+  const [projects, setProjects] = useState<[] | ProjectType[]>([]);
+  const [visibleProject, setVisibleProject] = useState<
+    undefined | ProjectType
+  >();
+
+  useEffect(() => {
+    const getProjectsData = async () => {
+      const response = await getProjects();
+      if (response.data) {
+        setProjects(response.data);
+        setVisibleProject(response.data[0]);
+      }
+    };
+    getProjectsData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ display: "flex", width: "100%", height: "100vh" }}>
+      <Menu
+        projects={projects}
+        visibleProject={visibleProject}
+        setVisibleProject={setVisibleProject}
+      />
+      {visibleProject ? (
+        <ProjectView project={visibleProject} />
+      ) : (
+        <p>No project</p>
+      )}
     </div>
   );
 }
 
 export default App;
+
+// sorting, filtering, search
+// reduce, hooks
