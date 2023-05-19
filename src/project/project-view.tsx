@@ -15,6 +15,7 @@ export const ProjectView = ({ project }: { project: ProjectType }) => {
   }) => {
     const section = sections.find((s) => s.id === sectionId);
     if (section) {
+      //
       section.items.push({ id: section.items.length + 1, label: item });
     }
   };
